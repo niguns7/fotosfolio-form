@@ -6,19 +6,22 @@ export type FormElementType =
   | 'number' 
   | 'textarea' 
   | 'date' 
-  | 'select';
+  | 'select'
+  | 'heading'
+  | 'divider'
+  | 'image';
 
 export interface FormElement {
   id: string;
   type: FormElementType;
-  label: string;
+  label?: string;
   placeholder?: string;
   required?: boolean;
   options?: string[];
 }
 
 export interface FormData {
-  [fieldId: string]: any;
+  [fieldId: string]: string | number | boolean;
 }
 
 export interface ValidationErrors {

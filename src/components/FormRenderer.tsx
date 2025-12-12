@@ -14,6 +14,9 @@ import {
   DateInput,
   TextArea,
   SelectInput,
+  HeadlineElement,
+  HorizontalRule,
+  ImageUpload,
 } from './FormElements';
 import { validateForm } from '@/utils/validation';
 
@@ -66,10 +69,32 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
   };
 
   const renderFormElement = (element: FormElement) => {
+    // For non-input elements
+    if (element.type === 'heading') {
+      return (
+        <HeadlineElement
+          key={element.id}
+          id={element.id}
+          label={element.label || 'Headline'}
+          theme={formConfig.theme}
+        />
+      );
+    }
+
+    if (element.type === 'divider') {
+      return (
+        <HorizontalRule
+          key={element.id}
+          id={element.id}
+        />
+      );
+    }
+
+    // For input elements
     const commonProps = {
       id: element.id,
-      label: element.label,
-      placeholder: element.placeholder || `Enter ${element.label.toLowerCase()}`,
+      label: element.label || '',
+      placeholder: element.placeholder || `Enter ${(element.label || '').toLowerCase()}`,
       required: element.required,
       error: errors[element.id],
       theme: formConfig.theme,
@@ -147,14 +172,26 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
           />
         );
 
+      case 'image':
+        return (
+          <ImageUpload
+            key={element.id}
+            {...commonProps}
+            value={(formData[element.id] as string) || ''}
+            onChange={(value) => handleFieldChange(element.id, value)}
+          />
+        );
+
       default:
+        console.warn('Unknown form element type:', element.type);
         return null;
     }
   };
 
   return (
     <div className="min-h-screen py-8 px-4 bg-white">
-      <div className={`mx-auto max-w-2xl`}>
+      <div className={`mx-auto max-w-2xl space-y-6`}>
+        {/* Header Card */}
         <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
           <FormHeader
             logo={formConfig.logo}
@@ -163,9 +200,15 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
             description={formConfig.description}
             theme={formConfig.theme}
           />
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6 mt-8">
-            {formConfig.formElements.map(renderFormElement)}
+        {/* Form Card */}
+        <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {formConfig.formElements.map((element) => {
+              console.log('Rendering element:', element.type, element.id);
+              return renderFormElement(element);
+            })}
 
             <div className="pt-4">
               <SubmitButton

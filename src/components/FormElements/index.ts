@@ -5,3 +5,6 @@ export { NumberInput } from './NumberInput';
 export { DateInput } from './DateInput';
 export { TextArea } from './TextArea';
 export { SelectInput } from './SelectInput';
+export { HeadlineElement } from './HeadlineElement';
+export { HorizontalRule } from './HorizontalRule';
+export { ImageUpload } from './ImageUpload';

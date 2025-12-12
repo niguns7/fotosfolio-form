@@ -57,7 +57,12 @@ export const validateForm = (
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
   
-  formElements.forEach(element => {
+  // Skip validation for non-input elements
+  const inputElements = formElements.filter(
+    element => !['heading', 'divider'].includes(element.type)
+  );
+  
+  inputElements.forEach(element => {
     const error = validateField(
       element.type,
       formData[element.id],
