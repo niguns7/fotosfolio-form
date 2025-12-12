@@ -17,6 +17,7 @@ import {
   HeadlineElement,
   HorizontalRule,
   ImageUpload,
+  AgreementField,
 } from './FormElements';
 import { validateForm } from '@/utils/validation';
 
@@ -179,6 +180,21 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
             {...commonProps}
             value={(formData[element.id] as string) || ''}
             onChange={(value) => handleFieldChange(element.id, value)}
+          />
+        );
+
+      case 'agreement':
+        return (
+          <AgreementField
+            key={element.id}
+            id={element.id}
+            label={element.label || 'Agreement'}
+            required={element.required}
+            value={(formData[element.id] as boolean) || false}
+            onChange={(value) => handleFieldChange(element.id, value)}
+            error={errors[element.id]}
+            theme={formConfig.theme}
+            agreementText={element.agreementText}
           />
         );
 

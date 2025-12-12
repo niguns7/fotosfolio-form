@@ -8,3 +8,4 @@ export { SelectInput } from './SelectInput';
 export { HeadlineElement } from './HeadlineElement';
 export { HorizontalRule } from './HorizontalRule';
 export { ImageUpload } from './ImageUpload';
+export { AgreementField } from './AgreementField';

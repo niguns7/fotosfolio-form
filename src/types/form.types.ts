@@ -9,7 +9,8 @@ export type FormElementType =
   | 'select'
   | 'heading'
   | 'divider'
-  | 'image';
+  | 'image'
+  | 'agreement';
 
 export interface FormElement {
   id: string;
@@ -18,6 +19,7 @@ export interface FormElement {
   placeholder?: string;
   required?: boolean;
   options?: string[];
+  agreementText?: string; // For agreement type
 }
 
 export interface FormData {

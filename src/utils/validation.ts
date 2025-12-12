@@ -7,7 +7,15 @@ export const validateField = (
   required: boolean,
   options?: string[]
 ): string | null => {
-  // Check required
+  // Check required for boolean fields (like agreement checkbox)
+  if (type === 'agreement') {
+    if (required && !value) {
+      return 'You must agree to the terms and conditions';
+    }
+    return null;
+  }
+
+  // Check required for other fields
   if (required && (!value || value.toString().trim() === '')) {
     return 'This field is required';
   }
