@@ -85,6 +85,7 @@ export default function BookingFormPage() {
       <FormRenderer
         formConfig={renderedFormConfig}
         onSubmit={handleSubmit}
+        isGeneralForm={formType === 'general'}
       />
     </div>
   );

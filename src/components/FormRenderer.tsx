@@ -27,9 +27,10 @@ import { validateForm } from '@/utils/validation';
 interface FormRendererProps {
   formConfig: FormConfig;
   onSubmit: (formData: Record<string, string | number | boolean>) => Promise<void>;
+  isGeneralForm?: boolean;
 }
 
-export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit }) => {
+export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit, isGeneralForm = false }) => {
   const [formData, setFormData] = useState<Record<string, string | number | boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,15 +49,15 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate form fields
     const validationErrors = validateForm(formData, formConfig.formElements);
-    
-    // Validate static payment screenshot field
-    if (!formData['payment_screenshot'] || formData['payment_screenshot'].toString().trim() === '') {
+
+    // Validate static payment screenshot field only if NOT a general form
+    if (!isGeneralForm && (!formData['payment_screenshot'] || formData['payment_screenshot'].toString().trim() === '')) {
       validationErrors['payment_screenshot'] = 'Payment screenshot is required';
     }
-    
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       // Scroll to first error
@@ -273,24 +274,28 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
             })}
 
             {/* Static Payment Information Section */}
-            <QRCodeDisplay
-              id="payment-qr"
-              label="Payment Information"
-              theme={formConfig.theme}
-              userId={formConfig.photographerId}
-            />
+            {/* Static Payment Information Section - Only show if not general form */}
+            {!isGeneralForm && (
+              <>
+                <QRCodeDisplay
+                  id="payment-qr"
+                  label="Payment Information"
+                  theme={formConfig.theme}
+                  userId={formConfig.photographerId}
+                />
 
-            {/* Static Payment Upload Field */}
-            <PaymentUpload
-              id="payment_screenshot"
-              label="Upload Payment Screenshot"
-              required={true}
-              value={(formData['payment_screenshot'] as string) || ''}
-              onChange={(value) => handleFieldChange('payment_screenshot', value)}
-              error={errors['payment_screenshot']}
-              theme={formConfig.theme}
-              userId={formConfig.photographerId}
-            />
+                <PaymentUpload
+                  id="payment_screenshot"
+                  label="Upload Payment Screenshot"
+                  required={true}
+                  value={(formData['payment_screenshot'] as string) || ''}
+                  onChange={(value) => handleFieldChange('payment_screenshot', value)}
+                  error={errors['payment_screenshot']}
+                  theme={formConfig.theme}
+                  userId={formConfig.photographerId}
+                />
+              </>
+            )}
 
             <div className="pt-4">
               <SubmitButton
