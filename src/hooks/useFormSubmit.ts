@@ -39,7 +39,7 @@ export const useFormSubmit = (): UseFormSubmitResult => {
       // Submit to API
       const response = await submitBooking(payload);
 
-      if (response.status === 2001) {
+      if (response.status === 201) {
         toast.success('Booking submitted successfully!');
 
         // Redirect to success page with booking details
