@@ -41,15 +41,11 @@ export interface SubmitBookingRequest {
 
 // API Response for submitting booking
 export interface SubmitBookingResponse {
-  status: boolean;
-  data?: {
-    bookingId: string;
-    eventName: string;
-    eventDate: string;
-    status: string;
-    message: string;
-  };
-  error?: string;
+  status: number; // 2001 for success
+  bookingId: string;
+  eventName: string;
+  eventDate: string;
+  message: string;
 }
 
 // Error response structure

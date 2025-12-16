@@ -1,10 +1,11 @@
 import apiClient from './api';
 import { SubmitBookingRequest, SubmitBookingResponse } from '@/types/api.types';
+import { AxiosResponse } from 'axios';
 
 // Submit event booking
 export const submitBooking = async (
   bookingData: SubmitBookingRequest
-): Promise<SubmitBookingResponse> => {
+): Promise<AxiosResponse<SubmitBookingResponse>> => {
   try {
     const response = await apiClient.post<SubmitBookingResponse>(
       '/event-management',

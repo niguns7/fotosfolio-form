@@ -39,7 +39,7 @@ export const useFormSubmit = (): UseFormSubmitResult => {
       // Submit to API
       const response = await submitBooking(payload);
 
-      if (response.status === 201 && response.data) {
+      if (response.status === 2001) {
         toast.success('Booking submitted successfully!');
 
         // Redirect to success page with booking details
@@ -49,7 +49,7 @@ export const useFormSubmit = (): UseFormSubmitResult => {
         });
         router.push(`/success?${params.toString()}`);
       } else {
-        throw new Error(response.error || 'Failed to submit booking');
+        throw new Error('Failed to submit booking');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to submit form';
