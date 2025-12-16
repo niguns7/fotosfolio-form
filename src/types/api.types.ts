@@ -39,6 +39,12 @@ export interface SubmitBookingRequest {
   customFields: Record<string, string | number | boolean>;
 }
 
+// API Request for submitting general form
+export interface SubmitGeneralFormRequest {
+  assigneeId: string;
+  customFields: Record<string, string | number | boolean>;
+}
+
 // API Response for submitting booking
 export interface SubmitBookingResponse {
   status: number; // 2001 for success

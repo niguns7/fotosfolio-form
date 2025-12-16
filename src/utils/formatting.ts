@@ -9,24 +9,11 @@ export const toCamelCase = (str: string): string => {
     .replace(/\s+/g, '');
 };
 
-// Transform form data to API payload
-export const transformFormDataToPayload = (
+// Helper to extract custom fields
+const extractCustomFields = (
   formData: Record<string, string | number | boolean>,
-  formElements: FormElement[],
-  eventName: string,
-  assigneeId: string
+  formElements: FormElement[]
 ) => {
-  // Find date field for eventDate
-  const dateField = formElements.find(el => el.type === 'date');
-  let eventDate = new Date().toISOString();
-
-  if (dateField && formData[dateField.id]) {
-    // Convert YYYY-MM-DD to ISO 8601 with time
-    const dateValue = formData[dateField.id] as string;
-    eventDate = new Date(dateValue + 'T10:00:00Z').toISOString();
-  }
-
-  // Build customFields object - only include fields with actual values
   const customFields: Record<string, string | number | boolean> = {};
 
   formElements.forEach(element => {
@@ -51,6 +38,28 @@ export const transformFormDataToPayload = (
     customFields['QRpayment'] = formData['payment_screenshot'];
   }
 
+  return customFields;
+};
+
+// Transform form data to API payload for Event Booking
+export const transformFormDataToPayload = (
+  formData: Record<string, string | number | boolean>,
+  formElements: FormElement[],
+  eventName: string,
+  assigneeId: string
+) => {
+  // Find date field for eventDate
+  const dateField = formElements.find(el => el.type === 'date');
+  let eventDate = new Date().toISOString();
+
+  if (dateField && formData[dateField.id]) {
+    // Convert YYYY-MM-DD to ISO 8601 with time
+    const dateValue = formData[dateField.id] as string;
+    eventDate = new Date(dateValue + 'T10:00:00Z').toISOString();
+  }
+
+  const customFields = extractCustomFields(formData, formElements);
+
   // Return only the required fields - no extra null/empty fields
   const payload = {
     eventName,
@@ -60,4 +69,18 @@ export const transformFormDataToPayload = (
   };
 
   return payload;
+};
+
+// Transform form data to API payload for General Form
+export const transformFormDataToGeneralPayload = (
+  formData: Record<string, string | number | boolean>,
+  formElements: FormElement[],
+  assigneeId: string
+) => {
+  const customFields = extractCustomFields(formData, formElements);
+
+  return {
+    assigneeId,
+    customFields
+  };
 };

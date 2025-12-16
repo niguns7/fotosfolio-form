@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { submitBooking } from '@/services/submissionService';
-import { transformFormDataToPayload } from '@/utils/formatting';
+import { submitBooking, submitGeneralForm } from '@/services/submissionService';
+import { transformFormDataToPayload, transformFormDataToGeneralPayload } from '@/utils/formatting';
 import { FormElement } from '@/types/form.types';
 
 interface UseFormSubmitResult {
@@ -12,7 +12,8 @@ interface UseFormSubmitResult {
     formData: Record<string, string | number | boolean>,
     formElements: FormElement[],
     eventName: string,
-    assigneeId: string
+    assigneeId: string,
+    formType?: string | null
   ) => Promise<void>;
   isSubmitting: boolean;
   error: string | null;
@@ -27,17 +28,23 @@ export const useFormSubmit = (): UseFormSubmitResult => {
     formData: Record<string, string | number | boolean>,
     formElements: FormElement[],
     eventName: string,
-    assigneeId: string
+    assigneeId: string,
+    formType?: string | null
   ) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      // Transform form data to API payload
-      const payload = transformFormDataToPayload(formData, formElements, eventName, assigneeId);
+      let response;
 
-      // Submit to API
-      const response = await submitBooking(payload);
+      if (formType === 'general') {
+        const payload = transformFormDataToGeneralPayload(formData, formElements, assigneeId);
+        response = await submitGeneralForm(payload);
+      } else {
+        // Default to event submission
+        const payload = transformFormDataToPayload(formData, formElements, eventName, assigneeId);
+        response = await submitBooking(payload);
+      }
 
       if (response.status === 201) {
         toast.success('Booking submitted successfully!');
