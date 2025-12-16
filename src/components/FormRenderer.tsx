@@ -18,6 +18,9 @@ import {
   HorizontalRule,
   ImageUpload,
   AgreementField,
+  CheckboxField,
+  QRCodeDisplay,
+  PaymentUpload,
 } from './FormElements';
 import { validateForm } from '@/utils/validation';
 
@@ -46,8 +49,13 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form
+    // Validate form fields
     const validationErrors = validateForm(formData, formConfig.formElements);
+    
+    // Validate static payment screenshot field
+    if (!formData['payment_screenshot'] || formData['payment_screenshot'].toString().trim() === '') {
+      validationErrors['payment_screenshot'] = 'Payment screenshot is required';
+    }
     
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -184,6 +192,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
         );
 
       case 'agreement':
+      case 'terms':
         return (
           <AgreementField
             key={element.id}
@@ -194,7 +203,44 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
             onChange={(value) => handleFieldChange(element.id, value)}
             error={errors[element.id]}
             theme={formConfig.theme}
-            agreementText={element.agreementText}
+            agreementText={element.agreementText || element.placeholder}
+          />
+        );
+
+      case 'checkbox':
+        return (
+          <CheckboxField
+            key={element.id}
+            id={element.id}
+            label={element.label || 'Checkbox'}
+            required={element.required}
+            value={(formData[element.id] as boolean) || false}
+            onChange={(value) => handleFieldChange(element.id, value)}
+            error={errors[element.id]}
+            theme={formConfig.theme}
+            checkboxLabel={element.checkboxLabel}
+          />
+        );
+
+      case 'qrcode':
+        return (
+          <QRCodeDisplay
+            key={element.id}
+            id={element.id}
+            label={element.label}
+            theme={formConfig.theme}
+            userId={formConfig.photographerId}
+          />
+        );
+
+      case 'paymentUpload':
+        return (
+          <PaymentUpload
+            key={element.id}
+            {...commonProps}
+            value={(formData[element.id] as string) || ''}
+            onChange={(value) => handleFieldChange(element.id, value)}
+            userId={formConfig.photographerId}
           />
         );
 
@@ -225,6 +271,26 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
               console.log('Rendering element:', element.type, element.id);
               return renderFormElement(element);
             })}
+
+            {/* Static Payment Information Section */}
+            <QRCodeDisplay
+              id="payment-qr"
+              label="Payment Information"
+              theme={formConfig.theme}
+              userId={formConfig.photographerId}
+            />
+
+            {/* Static Payment Upload Field */}
+            <PaymentUpload
+              id="payment_screenshot"
+              label="Upload Payment Screenshot"
+              required={true}
+              value={(formData['payment_screenshot'] as string) || ''}
+              onChange={(value) => handleFieldChange('payment_screenshot', value)}
+              error={errors['payment_screenshot']}
+              theme={formConfig.theme}
+              userId={formConfig.photographerId}
+            />
 
             <div className="pt-4">
               <SubmitButton

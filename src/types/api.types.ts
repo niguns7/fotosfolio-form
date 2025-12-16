@@ -33,7 +33,8 @@ export interface FormConfig {
 // API Request for submitting event booking
 export interface SubmitBookingRequest {
   eventName: string;
-  eventDate: string; // ISO 8601 format
+  eventDate: string; // ISO 8601 format (e.g., "2024-12-31T10:00:00Z")
+  assigneeId: string; // User ID of the photographer/assignee
   customFields: Record<string, string | number | boolean>;
 }
 

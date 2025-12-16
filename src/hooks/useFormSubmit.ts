@@ -11,7 +11,8 @@ interface UseFormSubmitResult {
   submitForm: (
     formData: Record<string, string | number | boolean>,
     formElements: FormElement[],
-    eventName: string
+    eventName: string,
+    assigneeId: string
   ) => Promise<void>;
   isSubmitting: boolean;
   error: string | null;
@@ -25,14 +26,15 @@ export const useFormSubmit = (): UseFormSubmitResult => {
   const submitForm = async (
     formData: Record<string, string | number | boolean>,
     formElements: FormElement[],
-    eventName: string
+    eventName: string,
+    assigneeId: string
   ) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
       // Transform form data to API payload
-      const payload = transformFormDataToPayload(formData, formElements, eventName);
+      const payload = transformFormDataToPayload(formData, formElements, eventName, assigneeId);
       
       // Submit to API
       const response = await submitBooking(payload);

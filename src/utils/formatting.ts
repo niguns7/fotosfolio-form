@@ -13,7 +13,8 @@ export const toCamelCase = (str: string): string => {
 export const transformFormDataToPayload = (
   formData: Record<string, string | number | boolean>,
   formElements: FormElement[],
-  eventName: string
+  eventName: string,
+  assigneeId: string
 ) => {
   // Find date field for eventDate
   const dateField = formElements.find(el => el.type === 'date');
@@ -25,20 +26,38 @@ export const transformFormDataToPayload = (
     eventDate = new Date(dateValue + 'T10:00:00Z').toISOString();
   }
   
-  // Build customFields object
+  // Build customFields object - only include fields with actual values
   const customFields: Record<string, string | number | boolean> = {};
   
   formElements.forEach(element => {
+    // Skip non-input elements (heading, divider, qrcode)
+    if (element.type === 'heading' || element.type === 'divider' || element.type === 'qrcode') {
+      return;
+    }
+    
     const value = formData[element.id];
-    if (value !== undefined && value !== '') {
+    // Only add field if it has a meaningful value
+    if (value !== undefined && value !== '' && value !== null && value !== false) {
       const key = toCamelCase(element.label);
-      customFields[key] = value;
+      // Only add if the value is truly meaningful (not just 0 for numbers)
+      if (typeof value === 'number' || (typeof value === 'string' && value.trim() !== '') || value === true) {
+        customFields[key] = value;
+      }
     }
   });
   
-  return {
+  // Add static payment screenshot field with key "QRpayment" only if it exists
+  if (formData['payment_screenshot'] && formData['payment_screenshot'] !== '') {
+    customFields['QRpayment'] = formData['payment_screenshot'];
+  }
+  
+  // Return only the required fields - no extra null/empty fields
+  const payload = {
     eventName,
     eventDate,
+    assigneeId,
     customFields
   };
+  
+  return payload;
 };

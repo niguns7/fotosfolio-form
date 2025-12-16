@@ -43,4 +43,20 @@ apiClient.interceptors.response.use(
   }
 );
 
+// Upload images to event management
+export const uploadEventImages = async (userId: string, images: File[]): Promise<{ downloadUrls: string[]; message: string }> => {
+  const formData = new FormData();
+  images.forEach((image) => {
+    formData.append('images', image);
+  });
+
+  const response = await apiClient.post(`/event-management/upload-images/${userId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  return response.data;
+};
+
 export default apiClient;

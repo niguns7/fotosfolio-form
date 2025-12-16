@@ -8,7 +8,7 @@ export const validateField = (
   options?: string[]
 ): string | null => {
   // Check required for boolean fields (like agreement checkbox)
-  if (type === 'agreement') {
+  if (type === 'agreement' || type === 'checkbox' || type === 'terms') {
     if (required && !value) {
       return 'You must agree to the terms and conditions';
     }
@@ -67,7 +67,7 @@ export const validateForm = (
   
   // Skip validation for non-input elements
   const inputElements = formElements.filter(
-    element => !['heading', 'divider'].includes(element.type)
+    element => !['heading', 'divider', 'qrcode'].includes(element.type)
   );
   
   inputElements.forEach(element => {

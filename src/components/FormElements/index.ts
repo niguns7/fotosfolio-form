@@ -9,3 +9,6 @@ export { HeadlineElement } from './HeadlineElement';
 export { HorizontalRule } from './HorizontalRule';
 export { ImageUpload } from './ImageUpload';
 export { AgreementField } from './AgreementField';
+export { CheckboxField } from './CheckboxField';
+export { QRCodeDisplay } from './QRCodeDisplay';
+export { PaymentUpload } from './PaymentUpload';

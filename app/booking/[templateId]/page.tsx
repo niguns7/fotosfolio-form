@@ -41,7 +41,7 @@ export default function BookingFormPage() {
   }
 
   const handleSubmit = async (formData: Record<string, string | number | boolean>) => {
-    await submitForm(formData, formConfig.formElements, formConfig.eventName);
+    await submitForm(formData, formConfig.formElements, formConfig.eventName, formConfig.photographerId);
   };
 
   return (

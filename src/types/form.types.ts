@@ -10,7 +10,11 @@ export type FormElementType =
   | 'heading'
   | 'divider'
   | 'image'
-  | 'agreement';
+  | 'agreement'
+  | 'terms'
+  | 'checkbox'
+  | 'qrcode'
+  | 'paymentUpload';
 
 export interface FormElement {
   id: string;
@@ -20,6 +24,7 @@ export interface FormElement {
   required?: boolean;
   options?: string[];
   agreementText?: string; // For agreement type
+  checkboxLabel?: string; // For checkbox type
 }
 
 export interface FormData {
