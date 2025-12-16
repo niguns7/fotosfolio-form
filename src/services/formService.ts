@@ -19,9 +19,9 @@ export const getFormConfig = async (templateId: string): Promise<FormConfig> => 
     const response = await apiClient.get<GetFormConfigResponse>(
       `/event-management/custom-forms/${templateId}`
     );
-    
+
     const data = response.data;
-    
+
     // Transform API response to internal FormConfig structure
     const formConfig: FormConfig = {
       id: data.id,
@@ -34,8 +34,9 @@ export const getFormConfig = async (templateId: string): Promise<FormConfig> => 
       formElements: data.formFields.fields,
       isActive: true,
       photographerId: data.userId,
+      userId: data.userId,
     };
-    
+
     return formConfig;
   } catch (error) {
     if (error instanceof Error) {
