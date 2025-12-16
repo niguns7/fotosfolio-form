@@ -35,13 +35,13 @@ export const useFormSubmit = (): UseFormSubmitResult => {
     try {
       // Transform form data to API payload
       const payload = transformFormDataToPayload(formData, formElements, eventName, assigneeId);
-      
+
       // Submit to API
       const response = await submitBooking(payload);
-      
-      if (response.success && response.data) {
+
+      if (response.status === 201 && response.data) {
         toast.success('Booking submitted successfully!');
-        
+
         // Redirect to success page with booking details
         const params = new URLSearchParams({
           bookingId: response.data.bookingId,

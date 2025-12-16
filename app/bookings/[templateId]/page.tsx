@@ -5,13 +5,12 @@ import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useFormData } from '@/hooks/useFormData';
 import { useFormSubmit } from '@/hooks/useFormSubmit';
 import { useParams } from 'next/navigation';
-import React from 'react';
 
 
 export default function BookingFormPage() {
   const params = useParams();
   const templateId = params.templateId as string;
-  
+
   const { formConfig, loading, error } = useFormData(templateId);
   const { submitForm } = useFormSubmit();
 
@@ -30,7 +29,7 @@ export default function BookingFormPage() {
           <p className="text-gray-600 mb-6">
             {error || 'Unable to load the form. Please try again later.'}
           </p>
-          <a 
+          <a
             href="https://fotosfolio.com"
             className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
@@ -42,13 +41,13 @@ export default function BookingFormPage() {
   }
 
   const handleSubmit = async (formData: Record<string, string | number | boolean>) => {
-    await submitForm(formData, formConfig.formElements, formConfig.eventName);
+    await submitForm(formData, formConfig.formElements, formConfig.eventName, formConfig.userId);
   };
 
   return (
     <div className="min-h-screen bg-white">
-      <FormRenderer 
-        formConfig={formConfig} 
+      <FormRenderer
+        formConfig={formConfig}
         onSubmit={handleSubmit}
       />
     </div>

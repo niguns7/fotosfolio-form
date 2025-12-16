@@ -10,8 +10,8 @@ export const submitBooking = async (
       '/event-management',
       bookingData
     );
-    
-    return response.data;
+
+    return response;
   } catch (error) {
     if (error instanceof Error) {
       throw error;

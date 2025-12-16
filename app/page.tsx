@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-linear-to-br from-blue-50 to-purple-50">
       <div className="max-w-2xl w-full text-center">
         <div className="mb-8">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
@@ -19,7 +19,7 @@ export default function Home() {
           </h2>
           <div className="space-y-4 text-left">
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+              <div className="shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
                 1
               </div>
               <div>
@@ -30,7 +30,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+              <div className="shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
                 2
               </div>
               <div>
@@ -41,7 +41,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+              <div className="shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
                 3
               </div>
               <div>
@@ -68,9 +68,9 @@ export default function Home() {
 
         <div className="mt-12 text-sm text-gray-500">
           <p>
-            Powered by{' '}
-            <a 
-              href="https://fotosfolio.com" 
+            Powered by
+            <a
+              href="https://fotosfolio.com"
               className="text-gray-700 hover:text-gray-900 font-medium"
             >
               FotosFolio

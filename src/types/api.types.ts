@@ -28,6 +28,7 @@ export interface FormConfig {
   formElements: FormElement[];
   isActive: boolean;
   photographerId: string;
+  userId: string;
 }
 
 // API Request for submitting event booking
@@ -40,7 +41,7 @@ export interface SubmitBookingRequest {
 
 // API Response for submitting booking
 export interface SubmitBookingResponse {
-  success: boolean;
+  status: boolean;
   data?: {
     bookingId: string;
     eventName: string;
