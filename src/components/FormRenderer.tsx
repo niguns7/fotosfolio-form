@@ -21,6 +21,9 @@ import {
   CheckboxField,
   QRCodeDisplay,
   PaymentUpload,
+  TimeInput,
+  AmountInput,
+  PaymentSelector,
 } from './FormElements';
 import { validateForm } from '@/utils/validation';
 
@@ -242,6 +245,37 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
             value={(formData[element.id] as string) || ''}
             onChange={(value) => handleFieldChange(element.id, value)}
             userId={formConfig.photographerId}
+          />
+        );
+
+      case 'time':
+        return (
+          <TimeInput
+            key={element.id}
+            {...commonProps}
+            value={(formData[element.id] as string) || ''}
+            onChange={(value) => handleFieldChange(element.id, value)}
+          />
+        );
+
+      case 'amount':
+        return (
+          <AmountInput
+            key={element.id}
+            {...commonProps}
+            value={(formData[element.id] as number) || 0}
+            onChange={(value) => handleFieldChange(element.id, value)}
+          />
+        );
+
+      case 'payment':
+        return (
+          <PaymentSelector
+            key={element.id}
+            {...commonProps}
+            value={(formData[element.id] as string) || ''}
+            onChange={(value) => handleFieldChange(element.id, value)}
+            options={element.options}
           />
         );
 

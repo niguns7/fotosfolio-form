@@ -1,11 +1,11 @@
 // Form element types
-export type FormElementType = 
-  | 'text' 
-  | 'email' 
-  | 'phone' 
-  | 'number' 
-  | 'textarea' 
-  | 'date' 
+export type FormElementType =
+  | 'text'
+  | 'email'
+  | 'phone'
+  | 'number'
+  | 'textarea'
+  | 'date'
   | 'select'
   | 'heading'
   | 'divider'
@@ -14,7 +14,10 @@ export type FormElementType =
   | 'terms'
   | 'checkbox'
   | 'qrcode'
-  | 'paymentUpload';
+  | 'paymentUpload'
+  | 'time'
+  | 'amount'
+  | 'payment';
 
 export interface FormElement {
   id: string;
