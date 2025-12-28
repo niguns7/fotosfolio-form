@@ -56,10 +56,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
     // Validate form fields
     const validationErrors = validateForm(formData, formConfig.formElements);
 
-    // Validate static payment screenshot field only if NOT a general form
-    if (!isGeneralForm && (!formData['payment_screenshot'] || formData['payment_screenshot'].toString().trim() === '')) {
-      validationErrors['payment_screenshot'] = 'Payment screenshot is required';
-    }
+    // Payment screenshot is now optional - no validation needed
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -303,7 +300,6 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
         <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
           <form onSubmit={handleSubmit} className="space-y-6">
             {formConfig.formElements.map((element) => {
-              console.log('Rendering element:', element.type, element.id);
               return renderFormElement(element);
             })}
 
@@ -321,7 +317,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
                 <PaymentUpload
                   id="payment_screenshot"
                   label="Upload Payment Screenshot"
-                  required={true}
+                  required={false}
                   value={(formData['payment_screenshot'] as string) || ''}
                   onChange={(value) => handleFieldChange('payment_screenshot', value)}
                   error={errors['payment_screenshot']}
