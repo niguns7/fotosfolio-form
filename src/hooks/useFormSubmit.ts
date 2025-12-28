@@ -51,7 +51,7 @@ export const useFormSubmit = (): UseFormSubmitResult => {
 
         // Redirect to success page with booking details
         const params = new URLSearchParams({
-          bookingId: response.data.bookingId,
+          bookingId: response.data.id,
           eventName: response.data.eventName,
         });
         router.push(`/success?${params.toString()}`);

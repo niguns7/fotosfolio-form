@@ -36,14 +36,14 @@ function SuccessContent() {
           </p>
         </div>
 
-        {bookingId && (
+        {/* {bookingId && (
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-500 mb-1">Booking ID</p>
             <p className="text-lg font-mono font-semibold text-gray-800">
               {bookingId}
             </p>
           </div>
-        )}
+        )} */}
 
         {eventName && (
           <div className="mb-6">

@@ -47,11 +47,27 @@ export interface SubmitGeneralFormRequest {
 
 // API Response for submitting booking
 export interface SubmitBookingResponse {
-  status: number; // 2001 for success
-  bookingId: string;
+  id: string;
   eventName: string;
   eventDate: string;
-  message: string;
+  isImportant: boolean;
+  assigneeId: string;
+  customFields: Record<string, string | number | boolean>;
+  teamMembers: string[];
+  clientName: string | null;
+  clientEmail: string | null;
+  clientPhone: string | null;
+  venue: string | null;
+  eventLocation: string | null;
+  eventTime: string | null;
+  arrivalTime: string | null;
+  locationLatitude: number | null;
+  locationLongitude: number | null;
+  googleCalendarEventId: string | null;
+  status: string; // 'pending', 'confirmed', etc.
+  syncGC: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Error response structure
