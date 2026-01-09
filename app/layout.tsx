@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "FotosFolio Forms",
-  description: "Book your photography session with FotosFolio",
+  title: "Fotosfolio Forms",
+  description: "",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
         className={`${inter.variable} antialiased bg-white`}
       >
         {children}
-        <Toaster 
+        <Toaster
           position="top-right"
           toastOptions={{
             duration: 4000,
