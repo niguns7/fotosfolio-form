@@ -79,7 +79,7 @@ export const validateField = (
       }
 
       const digitCount = normalizedPhone.replace(/\D/g, "").length;
-      const minDigits = validationOptions.minLength ?? 7;
+      const minDigits = validationOptions.minLength ?? 10;
       const maxDigits = validationOptions.maxLength ?? 15;
 
       if (digitCount < minDigits) {
