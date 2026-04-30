@@ -1,23 +1,23 @@
 // Form element types
 export type FormElementType =
-  | 'text'
-  | 'email'
-  | 'phone'
-  | 'number'
-  | 'textarea'
-  | 'date'
-  | 'select'
-  | 'heading'
-  | 'divider'
-  | 'image'
-  | 'agreement'
-  | 'terms'
-  | 'checkbox'
-  | 'qrcode'
-  | 'paymentUpload'
-  | 'time'
-  | 'amount'
-  | 'payment';
+  | "text"
+  | "email"
+  | "phone"
+  | "number"
+  | "textarea"
+  | "date"
+  | "select"
+  | "heading"
+  | "divider"
+  | "image"
+  | "agreement"
+  | "terms"
+  | "checkbox"
+  | "qrcode"
+  | "paymentUpload"
+  | "time"
+  | "amount"
+  | "payment";
 
 export interface FormElement {
   id: string;
@@ -25,6 +25,8 @@ export interface FormElement {
   label?: string;
   placeholder?: string;
   required?: boolean;
+  minLength?: number;
+  maxLength?: number;
   options?: string[];
   agreementText?: string; // For agreement type
   checkboxLabel?: string; // For checkbox type

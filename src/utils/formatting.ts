@@ -1,41 +1,63 @@
-import { FormElement } from '@/types/form.types';
+import { FormElement } from "@/types/form.types";
 
 // Convert string to camelCase
 export const toCamelCase = (str: string): string => {
   return str
     .replace(/(?:^\w|[A-Z]|\b\w)/g, (letter, index) =>
-      index === 0 ? letter.toLowerCase() : letter.toUpperCase()
+      index === 0 ? letter.toLowerCase() : letter.toUpperCase(),
     )
-    .replace(/\s+/g, '');
+    .replace(/\s+/g, "");
 };
 
 // Helper to extract custom fields
 const extractCustomFields = (
   formData: Record<string, string | number | boolean>,
-  formElements: FormElement[]
+  formElements: FormElement[],
 ) => {
   const customFields: Record<string, string | number | boolean> = {};
 
-  formElements.forEach(element => {
+  formElements.forEach((element) => {
     // Skip non-input elements (heading, divider, qrcode)
-    if (element.type === 'heading' || element.type === 'divider' || element.type === 'qrcode') {
+    if (
+      element.type === "heading" ||
+      element.type === "divider" ||
+      element.type === "qrcode"
+    ) {
       return;
     }
 
     const value = formData[element.id];
     // Only add field if it has a meaningful value
-    if (value !== undefined && value !== '' && value !== null && value !== false) {
+    if (
+      value !== undefined &&
+      value !== "" &&
+      value !== null &&
+      value !== false
+    ) {
       const key = toCamelCase(element.label || element.id);
+      if (element.type === "number" || element.type === "amount") {
+        const numericValue = typeof value === "number" ? value : Number(value);
+
+        if (!Number.isNaN(numericValue)) {
+          customFields[key] = numericValue;
+        }
+        return;
+      }
+
       // Only add if the value is truly meaningful (not just 0 for numbers)
-      if (typeof value === 'number' || (typeof value === 'string' && value.trim() !== '') || value === true) {
+      if (
+        typeof value === "number" ||
+        (typeof value === "string" && value.trim() !== "") ||
+        value === true
+      ) {
         customFields[key] = value;
       }
     }
   });
 
   // Add static payment screenshot field with key "QRpayment" only if it exists
-  if (formData['payment_screenshot'] && formData['payment_screenshot'] !== '') {
-    customFields['QRpayment'] = formData['payment_screenshot'];
+  if (formData["payment_screenshot"] && formData["payment_screenshot"] !== "") {
+    customFields["QRpayment"] = formData["payment_screenshot"];
   }
 
   return customFields;
@@ -46,16 +68,16 @@ export const transformFormDataToPayload = (
   formData: Record<string, string | number | boolean>,
   formElements: FormElement[],
   eventName: string,
-  assigneeId: string
+  assigneeId: string,
 ) => {
   // Find date field for eventDate
-  const dateField = formElements.find(el => el.type === 'date');
+  const dateField = formElements.find((el) => el.type === "date");
   let eventDate = new Date().toISOString();
 
   if (dateField && formData[dateField.id]) {
     // Convert YYYY-MM-DD to ISO 8601 with time
     const dateValue = formData[dateField.id] as string;
-    eventDate = new Date(dateValue + 'T10:00:00Z').toISOString();
+    eventDate = new Date(dateValue + "T10:00:00Z").toISOString();
   }
 
   const customFields = extractCustomFields(formData, formElements);
@@ -65,7 +87,7 @@ export const transformFormDataToPayload = (
     eventName,
     eventDate,
     assigneeId,
-    customFields
+    customFields,
   };
 
   return payload;
@@ -75,12 +97,12 @@ export const transformFormDataToPayload = (
 export const transformFormDataToGeneralPayload = (
   formData: Record<string, string | number | boolean>,
   formElements: FormElement[],
-  assigneeId: string
+  assigneeId: string,
 ) => {
   const customFields = extractCustomFields(formData, formElements);
 
   return {
     assigneeId,
-    customFields
+    customFields,
   };
 };

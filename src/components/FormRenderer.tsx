@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { FormConfig } from '@/types/api.types';
-import { FormElement } from '@/types/form.types';
-import { FormHeader } from './FormHeader';
-import { FormFooter } from './FormFooter';
-import { SubmitButton } from './SubmitButton';
+import React, { useState } from "react";
+import { FormConfig } from "@/types/api.types";
+import { FormElement } from "@/types/form.types";
+import { FormHeader } from "./FormHeader";
+import { FormFooter } from "./FormFooter";
+import { SubmitButton } from "./SubmitButton";
 import {
   TextInput,
   EmailInput,
@@ -24,30 +24,87 @@ import {
   TimeInput,
   AmountInput,
   PaymentSelector,
-} from './FormElements';
-import { validateForm } from '@/utils/validation';
+} from "./FormElements";
+import { validateField, validateForm } from "@/utils/validation";
 
 interface FormRendererProps {
   formConfig: FormConfig;
-  onSubmit: (formData: Record<string, string | number | boolean>) => Promise<void>;
+  onSubmit: (
+    formData: Record<string, string | number | boolean>,
+  ) => Promise<void>;
   isGeneralForm?: boolean;
 }
 
-export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit, isGeneralForm = false }) => {
-  const [formData, setFormData] = useState<Record<string, string | number | boolean>>({});
+export const FormRenderer: React.FC<FormRendererProps> = ({
+  formConfig,
+  onSubmit,
+  isGeneralForm = false,
+}) => {
+  const [formData, setFormData] = useState<
+    Record<string, string | number | boolean>
+  >({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>(
+    {},
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleFieldChange = (fieldId: string, value: string | number | boolean) => {
-    setFormData(prev => ({ ...prev, [fieldId]: value }));
-    // Clear error for this field when user starts typing
-    if (errors[fieldId]) {
-      setErrors(prev => {
+  const getFieldValidationError = (
+    element: FormElement,
+    value = formData[element.id],
+  ) => {
+    return validateField(element.type, value, element.required || false, {
+      options: element.options,
+      minLength: element.minLength,
+      maxLength: element.maxLength,
+    });
+  };
+
+  const handleFieldChange = (
+    fieldId: string,
+    value: string | number | boolean,
+  ) => {
+    setFormData((prev) => ({ ...prev, [fieldId]: value }));
+
+    if (touchedFields[fieldId] || errors[fieldId]) {
+      const element = formConfig.formElements.find(
+        (item) => item.id === fieldId,
+      );
+      if (!element) return;
+
+      const error = getFieldValidationError(element, value);
+      setErrors((prev) => {
         const newErrors = { ...prev };
-        delete newErrors[fieldId];
+
+        if (error) {
+          newErrors[fieldId] = error;
+        } else {
+          delete newErrors[fieldId];
+        }
+
         return newErrors;
       });
     }
+  };
+
+  const handleFieldBlur = (fieldId: string) => {
+    const element = formConfig.formElements.find((item) => item.id === fieldId);
+    if (!element) return;
+
+    setTouchedFields((prev) => ({ ...prev, [fieldId]: true }));
+
+    const error = getFieldValidationError(element);
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+
+      if (error) {
+        newErrors[fieldId] = error;
+      } else {
+        delete newErrors[fieldId];
+      }
+
+      return newErrors;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,6 +112,18 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
 
     // Validate form fields
     const validationErrors = validateForm(formData, formConfig.formElements);
+    setTouchedFields(
+      formConfig.formElements.reduce<Record<string, boolean>>(
+        (acc, element) => {
+          if (!["heading", "divider", "qrcode"].includes(element.type)) {
+            acc[element.id] = true;
+          }
+
+          return acc;
+        },
+        {},
+      ),
+    );
 
     // Payment screenshot is now optional - no validation needed
 
@@ -63,7 +132,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
       // Scroll to first error
       const firstErrorField = Object.keys(validationErrors)[0];
       const element = document.getElementById(firstErrorField);
-      element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
@@ -72,7 +141,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
     try {
       await onSubmit(formData);
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error("Form submission error:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -80,150 +149,155 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
 
   const renderFormElement = (element: FormElement) => {
     // For non-input elements
-    if (element.type === 'heading') {
+    if (element.type === "heading") {
       return (
         <HeadlineElement
           key={element.id}
           id={element.id}
-          label={element.label || 'Headline'}
+          label={element.label || "Headline"}
           theme={formConfig.theme}
         />
       );
     }
 
-    if (element.type === 'divider') {
-      return (
-        <HorizontalRule
-          key={element.id}
-          id={element.id}
-        />
-      );
+    if (element.type === "divider") {
+      return <HorizontalRule key={element.id} id={element.id} />;
     }
 
     // For input elements
     const commonProps = {
       id: element.id,
-      label: element.label || '',
-      placeholder: element.placeholder || `Enter ${(element.label || '').toLowerCase()}`,
+      label: element.label || "",
+      placeholder:
+        element.placeholder || `Enter ${(element.label || "").toLowerCase()}`,
       required: element.required,
       error: errors[element.id],
       theme: formConfig.theme,
     };
 
     switch (element.type) {
-      case 'text':
+      case "text":
         return (
           <TextInput
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'email':
+      case "email":
         return (
           <EmailInput
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'phone':
+      case "phone":
         return (
           <PhoneInput
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'number':
+      case "number":
         return (
           <NumberInput
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as number) || 0}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'date':
+      case "date":
         return (
           <DateInput
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'textarea':
+      case "textarea":
         return (
           <TextArea
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'select':
+      case "select":
         return (
           <SelectInput
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
             options={element.options || []}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'image':
+      case "image":
         return (
           <ImageUpload
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
           />
         );
 
-      case 'agreement':
-      case 'terms':
+      case "agreement":
+      case "terms":
         return (
           <AgreementField
             key={element.id}
             id={element.id}
-            label={element.label || 'Agreement'}
+            label={element.label || "Agreement"}
             required={element.required}
-            value={(formData[element.id] as boolean) || false}
+            value={(formData[element.id] as boolean) ?? false}
             onChange={(value) => handleFieldChange(element.id, value)}
             error={errors[element.id]}
             theme={formConfig.theme}
             agreementText={element.agreementText || element.placeholder}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'checkbox':
+      case "checkbox":
         return (
           <CheckboxField
             key={element.id}
             id={element.id}
-            label={element.label || 'Checkbox'}
+            label={element.label || "Checkbox"}
             required={element.required}
-            value={(formData[element.id] as boolean) || false}
+            value={(formData[element.id] as boolean) ?? false}
             onChange={(value) => handleFieldChange(element.id, value)}
             error={errors[element.id]}
             theme={formConfig.theme}
             checkboxLabel={element.checkboxLabel}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'qrcode':
+      case "qrcode":
         return (
           <QRCodeDisplay
             key={element.id}
@@ -234,50 +308,53 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
           />
         );
 
-      case 'paymentUpload':
+      case "paymentUpload":
         return (
           <PaymentUpload
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) || ""}
             onChange={(value) => handleFieldChange(element.id, value)}
             userId={formConfig.photographerId}
           />
         );
 
-      case 'time':
+      case "time":
         return (
           <TimeInput
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'amount':
+      case "amount":
         return (
           <AmountInput
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as number) || 0}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
-      case 'payment':
+      case "payment":
         return (
           <PaymentSelector
             key={element.id}
             {...commonProps}
-            value={(formData[element.id] as string) || ''}
+            value={(formData[element.id] as string) ?? ""}
             onChange={(value) => handleFieldChange(element.id, value)}
             options={element.options}
+            onBlur={() => handleFieldBlur(element.id)}
           />
         );
 
       default:
-        console.warn('Unknown form element type:', element.type);
+        console.warn("Unknown form element type:", element.type);
         return null;
     }
   };
@@ -318,9 +395,11 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
                   id="payment_screenshot"
                   label="Upload Payment Screenshot"
                   required={false}
-                  value={(formData['payment_screenshot'] as string) || ''}
-                  onChange={(value) => handleFieldChange('payment_screenshot', value)}
-                  error={errors['payment_screenshot']}
+                  value={(formData["payment_screenshot"] as string) ?? ""}
+                  onChange={(value) =>
+                    handleFieldChange("payment_screenshot", value)
+                  }
+                  error={errors["payment_screenshot"]}
                   theme={formConfig.theme}
                   userId={formConfig.photographerId}
                 />

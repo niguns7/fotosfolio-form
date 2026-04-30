@@ -1,5 +1,5 @@
-import { FormElement } from './form.types';
-import { Theme } from './theme.types';
+import { FormElement } from "./form.types";
+import { Theme } from "./theme.types";
 
 // Actual API Response structure
 export interface GetFormConfigResponse {
@@ -11,6 +11,7 @@ export interface GetFormConfigResponse {
     fields: FormElement[];
   };
   logo?: string;
+  photographerName?: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
@@ -24,6 +25,7 @@ export interface FormConfig {
   description?: string;
   subtitle?: string;
   logo?: string;
+  photographerName?: string;
   theme: Theme;
   formElements: FormElement[];
   isActive: boolean;

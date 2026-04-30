@@ -1,11 +1,10 @@
-'use client';
+"use client";
 
-import { FormRenderer } from '@/components/FormRenderer';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { useFormData } from '@/hooks/useFormData';
-import { useFormSubmit } from '@/hooks/useFormSubmit';
-import { useParams } from 'next/navigation';
-
+import { FormRenderer } from "@/components/FormRenderer";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { useFormData } from "@/hooks/useFormData";
+import { useFormSubmit } from "@/hooks/useFormSubmit";
+import { useParams } from "next/navigation";
 
 export default function BookingFormPage() {
   const params = useParams();
@@ -24,10 +23,12 @@ export default function BookingFormPage() {
         <div className="text-center">
           <div className="text-6xl mb-4">⚠️</div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            {error === 'Form not found' ? 'Form Not Found' : 'Error Loading Form'}
+            {error === "Form not found"
+              ? "Form Not Found"
+              : "Error Loading Form"}
           </h1>
           <p className="text-gray-600 mb-6">
-            {error || 'Unable to load the form. Please try again later.'}
+            {error || "Unable to load the form. Please try again later."}
           </p>
           <a
             href="https://fotosfolio.com"
@@ -40,16 +41,21 @@ export default function BookingFormPage() {
     );
   }
 
-  const handleSubmit = async (formData: Record<string, string | number | boolean>) => {
-    await submitForm(formData, formConfig.formElements, formConfig.eventName, formConfig.userId);
+  const handleSubmit = async (
+    formData: Record<string, string | number | boolean>,
+  ) => {
+    await submitForm(
+      formData,
+      formConfig.formElements,
+      formConfig.eventName,
+      formConfig.userId,
+      formConfig.photographerName,
+    );
   };
 
   return (
     <div className="min-h-screen bg-white">
-      <FormRenderer
-        formConfig={formConfig}
-        onSubmit={handleSubmit}
-      />
+      <FormRenderer formConfig={formConfig} onSubmit={handleSubmit} />
     </div>
   );
 }

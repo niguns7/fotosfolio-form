@@ -1,5 +1,5 @@
-import React from 'react';
-import { Theme } from '@/types/theme.types';
+import React from "react";
+import { Theme } from "@/types/theme.types";
 
 interface NumberInputProps {
   id: string;
@@ -7,7 +7,8 @@ interface NumberInputProps {
   placeholder?: string;
   required?: boolean;
   value: number | string;
-  onChange: (value: number) => void;
+  onChange: (value: string) => void;
+  onBlur?: () => void;
   error?: string;
   theme: Theme;
 }
@@ -19,16 +20,22 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   required,
   value,
   onChange,
+  onBlur,
   error,
   theme,
 }) => {
+  const handleChange = (inputValue: string) => {
+    const sanitizedValue = inputValue.replace(/[^\d]/g, "");
+    onChange(sanitizedValue);
+  };
+
   return (
     <div className="mb-5">
-      <label 
-        htmlFor={id} 
-        className="block mb-2 text-sm font-semibold text-gray-800"
-        style={{ 
-          fontFamily: theme.fontFamily 
+      <label
+        htmlFor={id}
+        className="block mb-2 text-sm font-semibold text-slate-900"
+        style={{
+          fontFamily: theme.fontFamily,
         }}
       >
         {label}
@@ -38,17 +45,23 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         type="number"
         id={id}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => handleChange(e.target.value)}
+        onBlur={onBlur}
         placeholder={placeholder}
         required={required}
-        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all text-gray-400 placeholder:text-gray-400"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        className="w-full px-4 py-3 border border-slate-300 rounded-md bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all placeholder:text-slate-500"
         style={{
-          borderColor: error ? '#ef4444' : '#d1d5db',
+          borderColor: error ? "#dc2626" : "#cbd5e1",
           fontFamily: theme.fontFamily,
         }}
       />
       {error && (
-        <p className="mt-1 text-sm text-red-500" style={{ fontFamily: theme.fontFamily }}>
+        <p
+          className="mt-1 text-sm text-red-600"
+          style={{ fontFamily: theme.fontFamily }}
+        >
           {error}
         </p>
       )}
