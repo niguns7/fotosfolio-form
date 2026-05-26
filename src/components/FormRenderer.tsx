@@ -97,6 +97,9 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
         <HorizontalRule
           key={element.id}
           id={element.id}
+          theme={formConfig.theme}
+          label={element.label}
+          placeholder={element.placeholder}
         />
       );
     }
@@ -283,44 +286,66 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
     }
   };
 
+  const canvasBg = `${formConfig.theme.primaryColor}05`;
+
   return (
     <div 
       className="min-h-screen py-8 px-4 transition-colors duration-300"
       style={{
-        background: getBackgroundGradient(formConfig.theme.backgroundColor, formConfig.theme.primaryColor),
+        backgroundColor: canvasBg || '#f8fafc',
         fontFamily: formConfig.theme.fontFamily,
       }}
     >
-      <div className={`mx-auto ${getFormWidthClass(formConfig.theme.formWidth)} space-y-6`}>
+      <div className={`mx-auto ${getFormWidthClass(formConfig.theme.formWidth)} space-y-4`}>
         {/* Header Card */}
-        <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
-          <FormHeader
-            logo={formConfig.logo}
-            eventName={formConfig.eventName}
-            subtitle={formConfig.subtitle}
-            description={formConfig.description}
-            theme={formConfig.theme}
-          />
-        </div>
+        <FormHeader
+          logo={formConfig.logo}
+          eventName={formConfig.eventName}
+          subtitle={formConfig.subtitle}
+          description={formConfig.description}
+          theme={formConfig.theme}
+        />
 
-        {/* Form Card */}
-        <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {formConfig.formElements.map((element) => {
-              return renderFormElement(element);
-            })}
+        {/* Form Elements */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {formConfig.formElements.map((element) => {
+            const rendered = renderFormElement(element);
+            if (!rendered) return null;
 
-            {/* Static Payment Information Section */}
-            {/* Static Payment Information Section - Only show if not general form */}
-            {!isGeneralForm && (
-              <>
+            // If it is a divider/section break, render it without a card wrapper
+            if (element.type === 'divider' || element.type === 'horizontal_rule') {
+              return (
+                <div key={element.id} className="py-2">
+                  {rendered}
+                </div>
+              );
+            }
+
+            // Render each form element inside its own independent card
+            return (
+              <div 
+                key={element.id} 
+                className="p-6 bg-white border border-slate-200/60 rounded-xl shadow-sm"
+              >
+                {rendered}
+              </div>
+            );
+          })}
+
+          {/* Static Payment Information Section */}
+          {/* Static Payment Information Section - Only show if not general form */}
+          {!isGeneralForm && (
+            <>
+              <div className="p-6 bg-white border border-slate-200/60 rounded-xl shadow-sm">
                 <QRCodeDisplay
                   id="payment-qr"
                   label="Payment Information"
                   theme={formConfig.theme}
                   userId={formConfig.photographerId}
                 />
+              </div>
 
+              <div className="p-6 bg-white border border-slate-200/60 rounded-xl shadow-sm">
                 <PaymentUpload
                   id="payment_screenshot"
                   label="Upload Payment Screenshot"
@@ -331,21 +356,21 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
                   theme={formConfig.theme}
                   userId={formConfig.photographerId}
                 />
-              </>
-            )}
+              </div>
+            </>
+          )}
 
-            <div className="pt-4">
-              <SubmitButton
-                onClick={() => handleSubmit}
-                disabled={isSubmitting}
-                loading={isSubmitting}
-                theme={formConfig.theme}
-              />
-            </div>
-          </form>
-
-          <FormFooter />
-        </div>
+          {/* Action and Footer Card */}
+          <div className="p-6 bg-white border border-slate-200/60 rounded-xl shadow-sm flex flex-col items-center justify-center gap-4">
+            <SubmitButton
+              onClick={() => handleSubmit}
+              disabled={isSubmitting}
+              loading={isSubmitting}
+              theme={formConfig.theme}
+            />
+            <FormFooter />
+          </div>
+        </form>
       </div>
     </div>
   );

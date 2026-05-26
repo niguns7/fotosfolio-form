@@ -24,14 +24,14 @@ export const AgreementField: React.FC<AgreementFieldProps> = ({
   agreementText,
 }) => {
   return (
-    <div className={`mb-6 border border-gray-300 p-6 bg-white shadow-sm ${getButtonStyleClass(theme.buttonStyle)}`}>
+    <div className="w-full">
       {/* Label/Heading */}
       {label && (
         <h3 
-          className="text-xl font-bold mb-4 uppercase tracking-wide"
+          className="text-lg font-bold mb-3 uppercase tracking-wide"
           style={{ 
             fontFamily: theme.fontFamily,
-            color: theme.primaryColor
+            color: theme.textColor
           }}
         >
           {label}
@@ -41,7 +41,7 @@ export const AgreementField: React.FC<AgreementFieldProps> = ({
       {/* Agreement Text Box */}
       {agreementText && (
         <div 
-          className="w-full border border-gray-200 rounded-md p-4 mb-4 bg-gray-50 max-h-64 overflow-y-auto"
+          className="w-full border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50 max-h-64 overflow-y-auto"
           style={{ fontFamily: theme.fontFamily }}
         >
           <div 
@@ -66,7 +66,7 @@ export const AgreementField: React.FC<AgreementFieldProps> = ({
         />
         <label 
           htmlFor={id}
-          className="ml-3 text-base text-gray-900 cursor-pointer"
+          className="ml-3 text-sm text-gray-700 cursor-pointer"
           style={{ 
             fontFamily: theme.fontFamily,
             color: theme.textColor
