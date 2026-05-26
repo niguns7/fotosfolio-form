@@ -26,6 +26,7 @@ import {
   PaymentSelector,
 } from './FormElements';
 import { validateForm } from '@/utils/validation';
+import { getFormWidthClass, getBackgroundGradient } from '@/utils/theme';
 
 interface FormRendererProps {
   formConfig: FormConfig;
@@ -283,8 +284,14 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 bg-white">
-      <div className={`mx-auto max-w-2xl space-y-6`}>
+    <div 
+      className="min-h-screen py-8 px-4 transition-colors duration-300"
+      style={{
+        background: getBackgroundGradient(formConfig.theme.backgroundColor, formConfig.theme.primaryColor),
+        fontFamily: formConfig.theme.fontFamily,
+      }}
+    >
+      <div className={`mx-auto ${getFormWidthClass(formConfig.theme.formWidth)} space-y-6`}>
         {/* Header Card */}
         <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
           <FormHeader

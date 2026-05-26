@@ -14,9 +14,11 @@ export const HeadlineElement: React.FC<HeadlineElementProps> = ({
   return (
     <div className="mb-6">
       <h2 
-        className="text-xl md:text-2xl font-bold text-gray-900 border-b border-gray-200 pb-3"
+        className="text-xl md:text-2xl font-bold pb-3 border-b"
         style={{ 
-          fontFamily: theme.fontFamily 
+          fontFamily: theme.fontFamily,
+          color: theme.primaryColor,
+          borderBottomColor: `${theme.primaryColor}20`,
         }}
       >
         {label}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Theme } from '@/types/theme.types';
+import { getButtonStyleClass } from '@/utils/theme';
 
 interface TextAreaProps {
   id: string;
@@ -28,7 +29,8 @@ export const TextArea: React.FC<TextAreaProps> = ({
         htmlFor={id} 
         className="block mb-2 text-sm font-semibold text-gray-800"
         style={{ 
-          fontFamily: theme.fontFamily 
+          fontFamily: theme.fontFamily,
+          color: theme.textColor
         }}
       >
         {label}
@@ -41,10 +43,11 @@ export const TextArea: React.FC<TextAreaProps> = ({
         placeholder={placeholder}
         required={required}
         rows={4}
-        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all resize-vertical placeholder:text-gray-400"
+        className={`w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all resize-vertical placeholder:text-gray-400 ${getButtonStyleClass(theme.buttonStyle)}`}
         style={{
           borderColor: error ? '#ef4444' : '#d1d5db',
           fontFamily: theme.fontFamily,
+          color: theme.textColor,
         }}
       />
       {error && (

@@ -4,11 +4,11 @@ import apiClient from './api';
 
 // Default theme configuration
 const defaultTheme: Theme = {
-  primaryColor: '#2563eb',
-  secondaryColor: '#1e40af',
+  primaryColor: '#701A19',
+  secondaryColor: '#A1111A',
   backgroundColor: '#ffffff',
   textColor: '#1f2937',
-  fontFamily: 'Inter, sans-serif',
+  fontFamily: 'Inter',
   buttonStyle: 'rounded',
   formWidth: 'medium',
 };
@@ -22,15 +22,33 @@ export const getFormConfig = async (templateId: string): Promise<FormConfig> => 
 
     const data = response.data;
 
+    // Load theme configuration dynamically from database
+    let loadedTheme: Theme = { ...defaultTheme };
+    if (data.theme) {
+      try {
+        const parsedTheme = typeof data.theme === 'string'
+          ? JSON.parse(data.theme)
+          : data.theme;
+        if (parsedTheme && typeof parsedTheme === 'object') {
+          loadedTheme = {
+            ...loadedTheme,
+            ...parsedTheme
+          };
+        }
+      } catch (e) {
+        console.error("Failed to parse theme from API response:", e);
+      }
+    }
+
     // Transform API response to internal FormConfig structure
     const formConfig: FormConfig = {
       id: data.id,
       eventName: data.formName,
-      eventType: 'general',
+      eventType: data.formType || 'general',
       description: data.description,
-      subtitle: undefined,
+      subtitle: data.subtitle || undefined,
       logo: data.logo,
-      theme: defaultTheme,
+      theme: loadedTheme,
       formElements: data.formFields.fields,
       isActive: true,
       photographerId: data.userId,

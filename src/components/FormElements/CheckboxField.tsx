@@ -27,7 +27,8 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
       <label 
         className="block mb-3 text-sm font-semibold text-gray-800"
         style={{ 
-          fontFamily: theme.fontFamily 
+          fontFamily: theme.fontFamily,
+          color: theme.textColor
         }}
       >
         {label}
@@ -41,12 +42,18 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
           checked={value}
           onChange={(e) => onChange(e.target.checked)}
           required={required}
-          className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+          className="mt-0.5 h-4 w-4 rounded border-gray-300 focus:ring-2"
+          style={{
+            accentColor: theme.primaryColor,
+          }}
         />
         <label 
           htmlFor={id}
           className="ml-2 text-sm text-gray-700 cursor-pointer"
-          style={{ fontFamily: theme.fontFamily }}
+          style={{ 
+            fontFamily: theme.fontFamily,
+            color: theme.textColor
+          }}
         >
           {checkboxLabel || 'I agree to the terms and conditions'}
         </label>

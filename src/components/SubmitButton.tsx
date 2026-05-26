@@ -1,6 +1,8 @@
 import React from 'react';
 import { Theme } from '@/types/theme.types';
 
+import { getButtonStyleClass } from '@/utils/theme';
+
 interface SubmitButtonProps {
   label?: string;
   onClick: () => void;
@@ -21,9 +23,9 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
       type="submit"
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full py-3.5 px-6 font-semibold text-white rounded-md transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+      className={`w-full py-3.5 px-6 font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed ${getButtonStyleClass(theme.buttonStyle)}`}
       style={{
-        backgroundColor: '#7f2c2c',
+        backgroundColor: theme.primaryColor,
         fontFamily: theme.fontFamily,
       }}
     >

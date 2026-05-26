@@ -14,6 +14,13 @@ export interface GetFormConfigResponse {
   userId: string;
   createdAt: string;
   updatedAt: string;
+  theme?: string | Theme;
+  subtitle?: string;
+  thankYouMessage?: string;
+  redirectUrl?: string;
+  emailNotifications?: boolean | string;
+  requireApproval?: boolean | string;
+  formType?: string;
 }
 
 // Internal form configuration with default theme

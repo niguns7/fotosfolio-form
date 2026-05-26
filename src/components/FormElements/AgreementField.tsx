@@ -1,5 +1,6 @@
 import React from 'react';
 import { Theme } from '@/types/theme.types';
+import { getButtonStyleClass } from '@/utils/theme';
 
 interface AgreementFieldProps {
   id: string;
@@ -23,14 +24,14 @@ export const AgreementField: React.FC<AgreementFieldProps> = ({
   agreementText,
 }) => {
   return (
-    <div className="mb-6 border border-gray-300 rounded-lg p-6 bg-white shadow-sm">
+    <div className={`mb-6 border border-gray-300 p-6 bg-white shadow-sm ${getButtonStyleClass(theme.buttonStyle)}`}>
       {/* Label/Heading */}
       {label && (
         <h3 
-          className="text-xl font-bold mb-4 text-gray-900 uppercase tracking-wide"
+          className="text-xl font-bold mb-4 uppercase tracking-wide"
           style={{ 
             fontFamily: theme.fontFamily,
-            color: '#7c2d3a'
+            color: theme.primaryColor
           }}
         >
           {label}
@@ -58,12 +59,18 @@ export const AgreementField: React.FC<AgreementFieldProps> = ({
           checked={value}
           onChange={(e) => onChange(e.target.checked)}
           required={required}
-          className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+          className="mt-0.5 h-4 w-4 rounded border-gray-300 focus:ring-2"
+          style={{
+            accentColor: theme.primaryColor,
+          }}
         />
         <label 
           htmlFor={id}
           className="ml-3 text-base text-gray-900 cursor-pointer"
-          style={{ fontFamily: theme.fontFamily }}
+          style={{ 
+            fontFamily: theme.fontFamily,
+            color: theme.textColor
+          }}
         >
           I agree to the terms and conditions
         </label>

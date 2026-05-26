@@ -1,5 +1,6 @@
 import React from 'react';
 import { Theme } from '@/types/theme.types';
+import { getButtonStyleClass } from '@/utils/theme';
 
 interface SelectInputProps {
   id: string;
@@ -30,7 +31,8 @@ export const SelectInput: React.FC<SelectInputProps> = ({
         htmlFor={id} 
         className="block mb-2 text-sm font-semibold text-gray-800"
         style={{ 
-          fontFamily: theme.fontFamily 
+          fontFamily: theme.fontFamily,
+          color: theme.textColor
         }}
       >
         {label}
@@ -41,15 +43,16 @@ export const SelectInput: React.FC<SelectInputProps> = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all"
+        className={`w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all ${getButtonStyleClass(theme.buttonStyle)}`}
         style={{
           borderColor: error ? '#ef4444' : '#d1d5db',
           fontFamily: theme.fontFamily,
+          color: theme.textColor,
         }}
       >
-        <option value="">{placeholder || 'Select an option'}</option>
+        <option value="" style={{ color: '#9ca3af' }}>{placeholder || 'Select an option'}</option>
         {options.map((option, index) => (
-          <option key={index} value={option}>
+          <option key={index} value={option} style={{ color: theme.textColor }}>
             {option}
           </option>
         ))}

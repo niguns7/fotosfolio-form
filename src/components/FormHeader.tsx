@@ -13,6 +13,7 @@ interface FormHeaderProps {
 export const FormHeader: React.FC<FormHeaderProps> = ({
   logo,
   eventName,
+  subtitle,
   description,
   theme,
 }) => {
@@ -31,20 +32,32 @@ export const FormHeader: React.FC<FormHeaderProps> = ({
       )}
       
       <h1 
-        className="text-2xl md:text-3xl font-bold mb-3"
+        className="text-2xl md:text-3xl font-bold mb-2"
         style={{ 
-          color: '#7f2c2c',
+          color: theme.primaryColor,
           fontFamily: theme.fontFamily 
         }}
       >
         {eventName}
       </h1>
+
+      {subtitle && (
+        <p 
+          className="text-lg font-medium mb-3 text-gray-700"
+          style={{ 
+            fontFamily: theme.fontFamily 
+          }}
+        >
+          {subtitle}
+        </p>
+      )}
       
       {description && (
         <p 
-          className="text-base text-gray-600 mb-4"
+          className="text-base text-gray-600 mb-4 whitespace-pre-line"
           style={{ 
-            fontFamily: theme.fontFamily 
+            fontFamily: theme.fontFamily,
+            color: theme.textColor
           }}
         >
           {description}
