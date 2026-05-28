@@ -313,7 +313,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
             if (!rendered) return null;
 
             // If it is a divider/section break, render it without a card wrapper
-            if (element.type === 'divider' || element.type === 'horizontal_rule') {
+            if (element.type === 'divider') {
               return (
                 <div key={element.id} className="py-2">
                   {rendered}
