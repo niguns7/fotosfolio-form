@@ -93,6 +93,13 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
     }
 
     if (element.type === 'divider') {
+      const dividerElements = formConfig.formElements.filter(
+        (el) => el.type === 'divider'
+      );
+      const totalSections = dividerElements.length + 1;
+      const dividerIndex = dividerElements.findIndex((el) => el.id === element.id);
+      const sectionNumber = dividerIndex + 2;
+
       return (
         <HorizontalRule
           key={element.id}
@@ -100,6 +107,8 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
           theme={formConfig.theme}
           label={element.label}
           placeholder={element.placeholder}
+          sectionNumber={sectionNumber}
+          totalSections={totalSections}
         />
       );
     }
@@ -288,6 +297,30 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
 
   const canvasBg = `${formConfig.theme.primaryColor}05`;
 
+  const dividerElements = formConfig.formElements.filter(
+    (el) => el.type === 'divider'
+  );
+  const totalSections = dividerElements.length + 1;
+
+  const elementSectionNumber: Record<string, number> = {};
+  const elementIsFirstOfSection: Record<string, boolean> = {};
+
+  let sectionCounter = 1;
+  let nextIsFirst = false;
+
+  formConfig.formElements.forEach((element) => {
+    if (element.type === 'divider') {
+      sectionCounter++;
+      nextIsFirst = true;
+    } else {
+      elementSectionNumber[element.id] = sectionCounter;
+      if (nextIsFirst) {
+        elementIsFirstOfSection[element.id] = true;
+        nextIsFirst = false;
+      }
+    }
+  });
+
   return (
     <div 
       className="min-h-screen py-8 px-4 transition-colors duration-300"
@@ -304,6 +337,8 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
           subtitle={formConfig.subtitle}
           description={formConfig.description}
           theme={formConfig.theme}
+          sectionNumber={1}
+          totalSections={totalSections}
         />
 
         {/* Form Elements */}
@@ -313,7 +348,7 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
             if (!rendered) return null;
 
             // If it is a divider/section break, render it without a card wrapper
-            if (element.type === 'divider' || element.type === 'horizontal_rule') {
+            if (element.type === 'divider') {
               return (
                 <div key={element.id} className="py-2">
                   {rendered}
@@ -321,13 +356,36 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
               );
             }
 
+            const isFirst = elementIsFirstOfSection[element.id];
+            const currentSection = elementSectionNumber[element.id] || 1;
+
             // Render each form element inside its own independent card
             return (
-              <div 
-                key={element.id} 
-                className="p-6 bg-white border border-slate-200/60 rounded-xl shadow-sm"
-              >
-                {rendered}
+              <div key={element.id} className="flex flex-col">
+                {isFirst && totalSections > 1 && (
+                  <div className="flex">
+                    <div 
+                      className="px-4 py-1.5 text-xs font-semibold text-white rounded-t-lg shadow-sm"
+                      style={{ backgroundColor: formConfig.theme.primaryColor }}
+                    >
+                      Section {currentSection} of {totalSections}
+                    </div>
+                  </div>
+                )}
+                <div 
+                  className={`p-6 bg-white border border-slate-200/60 rounded-xl shadow-sm ${
+                    isFirst && totalSections > 1 ? "rounded-tl-none overflow-hidden" : ""
+                  }`}
+                  style={isFirst && totalSections > 1 ? { borderLeft: `6px solid ${formConfig.theme.primaryColor}` } : undefined}
+                >
+                  {isFirst && totalSections > 1 && (
+                    <div 
+                      className="h-2.5 -mt-6 -mx-6 mb-6"
+                      style={{ backgroundColor: formConfig.theme.primaryColor }}
+                    />
+                  )}
+                  {rendered}
+                </div>
               </div>
             );
           })}

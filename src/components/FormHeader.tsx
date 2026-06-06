@@ -8,6 +8,8 @@ interface FormHeaderProps {
   subtitle?: string;
   description?: string;
   theme: Theme;
+  sectionNumber?: number;
+  totalSections?: number;
 }
 
 export const FormHeader: React.FC<FormHeaderProps> = ({
@@ -16,13 +18,30 @@ export const FormHeader: React.FC<FormHeaderProps> = ({
   subtitle,
   description,
   theme,
+  sectionNumber,
+  totalSections,
 }) => {
+  const showSectionBadge = sectionNumber && totalSections && totalSections > 1;
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
-      <div
-        className="h-2.5 w-full transition-all duration-300"
-        style={{ backgroundColor: theme.primaryColor }}
-      />
+    <div className="flex flex-col">
+      {showSectionBadge && (
+        <div className="flex">
+          <div 
+            className="px-4 py-1.5 text-xs font-semibold text-white rounded-t-lg shadow-sm"
+            style={{ backgroundColor: theme.primaryColor }}
+          >
+            Section {sectionNumber} of {totalSections}
+          </div>
+        </div>
+      )}
+      <div 
+        className={`bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden ${showSectionBadge ? 'rounded-tl-none' : ''}`}
+        style={showSectionBadge ? { borderLeft: `6px solid ${theme.primaryColor}` } : undefined}
+      >
+        <div
+          className="h-2.5 w-full transition-all duration-300"
+          style={{ backgroundColor: theme.primaryColor }}
+        />
       <div className="p-6 md:p-8">
         {logo && (
           <div className="flex justify-start mb-4">
@@ -68,6 +87,7 @@ export const FormHeader: React.FC<FormHeaderProps> = ({
             {description}
           </p>
         )}
+      </div>
       </div>
     </div>
   );

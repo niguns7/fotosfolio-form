@@ -6,37 +6,24 @@ interface HorizontalRuleProps {
   theme: Theme;
   label?: string;
   placeholder?: string;
+  sectionNumber?: number;
+  totalSections?: number;
 }
 
-export const HorizontalRule: React.FC<HorizontalRuleProps> = ({ theme, label, placeholder }) => {
+export const HorizontalRule: React.FC<HorizontalRuleProps> = ({ 
+  theme, 
+  sectionNumber
+}) => {
+  const currentSection = sectionNumber ? sectionNumber - 1 : 1;
   return (
-    <div className="my-8">
-      {(label || placeholder) && (
-        <div className="mb-4">
-          {label && (
-            <h2 
-              className="text-xl font-bold tracking-tight text-slate-800"
-              style={{ fontFamily: theme.fontFamily }}
-            >
-              {label}
-            </h2>
-          )}
-          {placeholder && (
-            <p 
-              className="text-sm text-slate-500 mt-1"
-              style={{ fontFamily: theme.fontFamily }}
-            >
-              {placeholder}
-            </p>
-          )}
-        </div>
-      )}
-      <div className="relative flex items-center py-2">
-        <div className="flex-grow border-t-2 transition-all duration-300" style={{ borderColor: `${theme.primaryColor}20` }}></div>
-        {!label && !placeholder && (
-          <span className="flex-shrink mx-4 text-xs font-semibold uppercase tracking-wider text-slate-400" style={{ fontFamily: theme.fontFamily }}>Section Break</span>
-        )}
-        <div className="flex-grow border-t-2 transition-all duration-300" style={{ borderColor: `${theme.primaryColor}20` }}></div>
+    <div className="my-6 flex flex-col items-start gap-2 select-none">
+      <div 
+        className="flex items-center gap-2 text-sm text-slate-500 font-medium bg-slate-100/80 px-4 py-2.5 rounded-lg border border-slate-200 w-full sm:w-auto"
+        style={{ fontFamily: theme.fontFamily }}
+      >
+        <span>After section {currentSection}</span>
+        <span className="text-slate-400 font-semibold">Continue to next section</span>
+        <span className="ml-auto sm:ml-4 text-slate-400 text-xs">▼</span>
       </div>
     </div>
   );
