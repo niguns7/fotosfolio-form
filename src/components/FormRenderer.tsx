@@ -347,45 +347,65 @@ export const FormRenderer: React.FC<FormRendererProps> = ({ formConfig, onSubmit
             const rendered = renderFormElement(element);
             if (!rendered) return null;
 
-            // If it is a divider/section break, render it without a card wrapper
+            // If it is a divider/section break, render it with both the gap and a section header card
             if (element.type === 'divider') {
+              const dividerElements = formConfig.formElements.filter(
+                (el) => el.type === 'divider'
+              );
+              const totalSections = dividerElements.length + 1;
+              const dividerIndex = dividerElements.findIndex((el) => el.id === element.id);
+              const sectionNumber = dividerIndex + 2;
+
               return (
-                <div key={element.id} className="py-2">
-                  {rendered}
+                <div key={element.id} className="space-y-4">
+                  {/* The Gap */}
+                  <div className="py-2">
+                    {rendered}
+                  </div>
+                  
+                  {/* The Section Header Card */}
+                  <div className="flex flex-col">
+                    <div className="flex">
+                      <div 
+                        className="px-4 py-1.5 text-xs font-semibold text-white rounded-t-lg shadow-sm"
+                        style={{ backgroundColor: formConfig.theme.primaryColor }}
+                      >
+                        Section {sectionNumber} of {totalSections}
+                      </div>
+                    </div>
+                    <div 
+                      className="p-6 bg-white border border-slate-200/60 rounded-xl shadow-sm rounded-tl-none overflow-hidden"
+                    >
+                      <h2 
+                        className="text-2xl font-bold tracking-tight text-slate-800 pb-3 border-b mb-3"
+                        style={{ 
+                          fontFamily: formConfig.theme.fontFamily,
+                          borderBottomColor: `${formConfig.theme.primaryColor}20`
+                        }}
+                      >
+                        {element.label || 'Untitled section'}
+                      </h2>
+                      {element.placeholder && (
+                        <p 
+                          className="text-sm text-slate-500"
+                          style={{ fontFamily: formConfig.theme.fontFamily }}
+                        >
+                          {element.placeholder}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               );
             }
 
-            const isFirst = elementIsFirstOfSection[element.id];
-            const currentSection = elementSectionNumber[element.id] || 1;
-
             // Render each form element inside its own independent card
             return (
-              <div key={element.id} className="flex flex-col">
-                {isFirst && totalSections > 1 && (
-                  <div className="flex">
-                    <div 
-                      className="px-4 py-1.5 text-xs font-semibold text-white rounded-t-lg shadow-sm"
-                      style={{ backgroundColor: formConfig.theme.primaryColor }}
-                    >
-                      Section {currentSection} of {totalSections}
-                    </div>
-                  </div>
-                )}
-                <div 
-                  className={`p-6 bg-white border border-slate-200/60 rounded-xl shadow-sm ${
-                    isFirst && totalSections > 1 ? "rounded-tl-none overflow-hidden" : ""
-                  }`}
-                  style={isFirst && totalSections > 1 ? { borderLeft: `6px solid ${formConfig.theme.primaryColor}` } : undefined}
-                >
-                  {isFirst && totalSections > 1 && (
-                    <div 
-                      className="h-2.5 -mt-6 -mx-6 mb-6"
-                      style={{ backgroundColor: formConfig.theme.primaryColor }}
-                    />
-                  )}
-                  {rendered}
-                </div>
+              <div 
+                key={element.id}
+                className="p-6 bg-white border border-slate-200/60 rounded-xl shadow-sm"
+              >
+                {rendered}
               </div>
             );
           })}
