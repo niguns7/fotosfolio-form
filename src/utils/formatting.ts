@@ -46,7 +46,8 @@ export const transformFormDataToPayload = (
   formData: Record<string, string | number | boolean>,
   formElements: FormElement[],
   eventName: string,
-  assigneeId: string
+  assigneeId: string,
+  bookingId?: string | null
 ) => {
   // Find date field for eventDate
   const dateField = formElements.find(el => el.type === 'date');
@@ -62,6 +63,7 @@ export const transformFormDataToPayload = (
 
   // Return only the required fields - no extra null/empty fields
   const payload = {
+    bookingId: bookingId || null,
     eventName,
     eventDate,
     assigneeId,
@@ -75,11 +77,13 @@ export const transformFormDataToPayload = (
 export const transformFormDataToGeneralPayload = (
   formData: Record<string, string | number | boolean>,
   formElements: FormElement[],
-  assigneeId: string
+  assigneeId: string,
+  bookingId?: string | null
 ) => {
   const customFields = extractCustomFields(formData, formElements);
 
   return {
+    bookingId: bookingId || null,
     assigneeId,
     customFields
   };

@@ -4,12 +4,14 @@ import { FormRenderer } from '@/components/FormRenderer';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { useFormData } from '@/hooks/useFormData';
 import { useFormSubmit } from '@/hooks/useFormSubmit';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 
 
 export default function BookingFormPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const templateId = params.templateId as string;
+  const bookingId = searchParams.get('bookingId') || searchParams.get('booking_id') || searchParams.get('bookingid') || searchParams.get('id') || undefined;
 
   const { formConfig, loading, error } = useFormData(templateId);
   const { submitForm } = useFormSubmit();
@@ -41,7 +43,18 @@ export default function BookingFormPage() {
   }
 
   const handleSubmit = async (formData: Record<string, string | number | boolean>) => {
-    await submitForm(formData, formConfig.formElements, formConfig.eventName, formConfig.userId);
+    // Resolve booking ID dynamically from window.location as fallback
+    let resolvedBookingId = bookingId;
+    if (!resolvedBookingId && typeof window !== 'undefined') {
+      const queryParams = new URLSearchParams(window.location.search);
+      resolvedBookingId = queryParams.get('bookingId') || 
+                          queryParams.get('booking_id') || 
+                          queryParams.get('bookingid') || 
+                          queryParams.get('id') || 
+                          undefined;
+    }
+
+    await submitForm(formData, formConfig.formElements, formConfig.eventName, formConfig.userId, null, resolvedBookingId);
   };
 
   return (

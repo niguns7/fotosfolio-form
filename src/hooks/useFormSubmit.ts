@@ -13,7 +13,8 @@ interface UseFormSubmitResult {
     formElements: FormElement[],
     eventName: string,
     assigneeId: string,
-    formType?: string | null
+    formType?: string | null,
+    bookingId?: string | null
   ) => Promise<void>;
   isSubmitting: boolean;
   error: string | null;
@@ -29,7 +30,8 @@ export const useFormSubmit = (): UseFormSubmitResult => {
     formElements: FormElement[],
     eventName: string,
     assigneeId: string,
-    formType?: string | null
+    formType?: string | null,
+    bookingId?: string | null
   ) => {
     setIsSubmitting(true);
     setError(null);
@@ -38,11 +40,11 @@ export const useFormSubmit = (): UseFormSubmitResult => {
       let response;
 
       if (formType === 'general') {
-        const payload = transformFormDataToGeneralPayload(formData, formElements, assigneeId);
+        const payload = transformFormDataToGeneralPayload(formData, formElements, assigneeId, bookingId);
         response = await submitGeneralForm(payload);
       } else {
         // Default to event submission
-        const payload = transformFormDataToPayload(formData, formElements, eventName, assigneeId);
+        const payload = transformFormDataToPayload(formData, formElements, eventName, assigneeId, bookingId);
         response = await submitBooking(payload);
       }
 
@@ -51,8 +53,8 @@ export const useFormSubmit = (): UseFormSubmitResult => {
 
         // Redirect to success page with booking details
         const params = new URLSearchParams({
-          bookingId: response.data.id,
-          eventName: response.data.eventName,
+          bookingId: response.data.id || '',
+          eventName: response.data.eventName || eventName || 'Submission',
         });
         router.push(`/success?${params.toString()}`);
       } else {
