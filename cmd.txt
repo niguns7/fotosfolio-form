@@ -1,0 +1,26 @@
+# Fotosfolio Form Docker commands
+# Image: blueneontech/fotofolio-form:latest
+# Container: fotofolio-form
+
+# Build the image (set this env var first if your build needs it)
+docker build \
+  --build-arg NEXT_PUBLIC_API_BASE_URL=https://prod.fotosfolio.com \
+  -t blueneontech/fotofolio-form:latest .
+
+# Push / pull the image
+docker push blueneontech/fotofolio-form:latest
+docker pull blueneontech/fotofolio-form:latest
+
+# Stop / remove the container
+docker stop fotofolio-form
+docker rm fotofolio-form
+
+# Run the container to match docker inspect output as closely as possible
+docker run -d \
+  --name fotofolio-form \
+  --restart unless-stopped \
+  --network nginx-network \
+  -e NODE_ENV=production \
+  -e NEXT_TELEMETRY_DISABLED=1 \
+  -e PORT=3000 \
+  blueneontech/fotofolio-form:latest
