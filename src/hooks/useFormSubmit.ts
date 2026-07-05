@@ -14,7 +14,7 @@ interface UseFormSubmitResult {
     eventName: string,
     assigneeId: string,
     formType?: string | null,
-    bookingId?: string | null
+    bookingFormId?: string | null
   ) => Promise<void>;
   isSubmitting: boolean;
   error: string | null;
@@ -31,7 +31,7 @@ export const useFormSubmit = (): UseFormSubmitResult => {
     eventName: string,
     assigneeId: string,
     formType?: string | null,
-    bookingId?: string | null
+    bookingFormId?: string | null
   ) => {
     setIsSubmitting(true);
     setError(null);
@@ -40,11 +40,11 @@ export const useFormSubmit = (): UseFormSubmitResult => {
       let response;
 
       if (formType === 'general') {
-        const payload = transformFormDataToGeneralPayload(formData, formElements, assigneeId, bookingId);
+        const payload = transformFormDataToGeneralPayload(formData, formElements, assigneeId, bookingFormId);
         response = await submitGeneralForm(payload);
       } else {
         // Default to event submission
-        const payload = transformFormDataToPayload(formData, formElements, eventName, assigneeId, bookingId);
+        const payload = transformFormDataToPayload(formData, formElements, eventName, assigneeId, bookingFormId);
         response = await submitBooking(payload);
       }
 

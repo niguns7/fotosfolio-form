@@ -12,7 +12,6 @@ export default function BookingFormPage() {
   const searchParams = useSearchParams();
   const templateId = params.templateId as string;
   const formType = searchParams.get('type');
-  const bookingId = searchParams.get('bookingId') || searchParams.get('booking_id') || searchParams.get('bookingid') || searchParams.get('id') || undefined;
 
   const { formConfig, loading, error } = useFormData(templateId);
   const { submitForm } = useFormSubmit();
@@ -67,17 +66,6 @@ export default function BookingFormPage() {
   }
 
   const handleSubmit = async (formData: Record<string, string | number | boolean>) => {
-    // Resolve booking ID dynamically from window.location as fallback
-    let resolvedBookingId = bookingId;
-    if (!resolvedBookingId && typeof window !== 'undefined') {
-      const queryParams = new URLSearchParams(window.location.search);
-      resolvedBookingId = queryParams.get('bookingId') || 
-                          queryParams.get('booking_id') || 
-                          queryParams.get('bookingid') || 
-                          queryParams.get('id') || 
-                          undefined;
-    }
-
     // Filter elements passed to submitForm to match what was rendered
     const effectiveFormElements = formType === 'general'
       ? formConfig.formElements.filter(el => {
@@ -87,7 +75,7 @@ export default function BookingFormPage() {
       })
       : formConfig.formElements;
 
-    await submitForm(formData, effectiveFormElements, formConfig.eventName, formConfig.photographerId, formType, resolvedBookingId);
+    await submitForm(formData, effectiveFormElements, formConfig.eventName, formConfig.photographerId, formType, templateId);
   };
 
   if (!renderedFormConfig) return null;
